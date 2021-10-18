@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.background-color-theme {
+  background-color: #EF5350;
+}
+
+.logo-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+}
