@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { TOTAL_POKEMON } from "../../config";
 import * as PokemonDataSource from "../../api/PokemonSource";
 import { IPokemonNameResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
@@ -22,7 +23,7 @@ class Home extends Component<IHomeProps, IHomeState> {
     this.state = {
       isLoading: true,
       totalData: 0,
-      limit: 10
+      limit: TOTAL_POKEMON
     };
   }
 
