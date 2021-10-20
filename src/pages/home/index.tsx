@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { RouteComponentProps } from "react-router";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { saveAllPokemon } from "../../redux";
 import { TOTAL_POKEMON } from "../../config";
@@ -6,7 +8,8 @@ import * as PokemonDataSource from "../../api/PokemonSource";
 import { IPokemonNameResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
 
-interface IHomeProps {
+interface IHomeProps extends RouteComponentProps {
+  listPokemon: IPokemon[],
   saveAllPokemon(payload: IPokemon[]): any
 };
 
@@ -32,7 +35,14 @@ class Home extends Component<IHomeProps, IHomeState> {
   }
 
   componentDidMount() {
-    this.fetchAllPokemon();
+    if(this.props.listPokemon.length == this.state.limit) {
+      this.setState({
+        listPokemon: this.props.listPokemon,
+        isLoading: false
+      });
+    } else {
+      this.fetchAllPokemon();
+    }
   }
 
   fetchAllPokemon = () => {
@@ -129,4 +139,4 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Home);
+export default connect(mapStateToProps, mapDispatchToProps) (withRouter(Home));

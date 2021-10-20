@@ -14,12 +14,11 @@ class App extends PureComponent {
     return (
       <div className="container-fluid px-0">
         <Provider store={Store}>
-          <Header />
-
           <BrowserRouter>
+            <Header />
             <Switch>
+            <Route exact path="/" component={Home}></Route>
               <Route path="/details" component={Details}></Route>
-              <Route path="/" component={Home}></Route>
             </Switch>
           </BrowserRouter>
         </Provider>

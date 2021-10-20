@@ -9,7 +9,6 @@ const initialState = {
 const pokemonReducer = (state: IPokemonState = initialState, action: ISaveAllPokemonAction) => {
   switch(action.type) {
     case SAVE_ALL_POKEMON:
-      console.log("save all pokemon", action.payload);
       return {
         ...state,
         listPokemon: action.payload
