@@ -1,7 +1,9 @@
 import { SAVE_ALL_POKEMON } from "./PokemonTypes";
+import { IPokemon } from "../../interfaces/IPokemon";
 
-export const saveAllPokemon = () => {
+export const saveAllPokemon = (payload: IPokemon[]) => {
   return {
-    type: SAVE_ALL_POKEMON
+    type: SAVE_ALL_POKEMON,
+    payload: payload
   };
 };

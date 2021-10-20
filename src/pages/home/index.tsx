@@ -1,17 +1,20 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { saveAllPokemon } from "../../redux";
 import { TOTAL_POKEMON } from "../../config";
 import * as PokemonDataSource from "../../api/PokemonSource";
 import { IPokemonNameResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
 
 interface IHomeProps {
-
+  saveAllPokemon(payload: IPokemon[]): any
 };
 
 interface IHomeState {
   isLoading: boolean,
   totalData: number,
-  limit: number
+  limit: number,
+  listPokemon: IPokemon[],
 };
 
 let allPokemon: IPokemon[] = [];
@@ -23,7 +26,8 @@ class Home extends Component<IHomeProps, IHomeState> {
     this.state = {
       isLoading: true,
       totalData: 0,
-      limit: TOTAL_POKEMON
+      limit: TOTAL_POKEMON,
+      listPokemon: [],
     };
   }
 
@@ -54,10 +58,10 @@ class Home extends Component<IHomeProps, IHomeState> {
 
               })
               .finally(() => {
+                this.props.saveAllPokemon(allPokemon);
+
                 this.setState({
                   isLoading: false
-                }, () => {
-                  console.log("all pokemon", allPokemon);
                 });
               });
           }
@@ -79,7 +83,6 @@ class Home extends Component<IHomeProps, IHomeState> {
       .then((response) => {
         if(response.status == 200) {
           if(response.data != null) {
-            console.log("response data", response.data);
             let newPokemon: IPokemon = {
               id: response.data.id,
               name: response.data.name,
@@ -88,8 +91,10 @@ class Home extends Component<IHomeProps, IHomeState> {
 
             allPokemon.push(newPokemon);
           }
+          resolve(1);
         } else {
           // show modal
+          reject();
         }
       })
       .catch((ex) => {
@@ -97,7 +102,7 @@ class Home extends Component<IHomeProps, IHomeState> {
         reject();
       })
       .finally(() => {
-        resolve(1);
+        
       });
     });
   }
@@ -112,4 +117,16 @@ class Home extends Component<IHomeProps, IHomeState> {
   }
 }
 
-export default Home;
+const mapStateToProps = (state: IHomeState) => {
+  return {
+    listPokemon: state.listPokemon
+  };
+}
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    saveAllPokemon: (payload: IPokemon[]) => dispatch(saveAllPokemon(payload))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Home);
