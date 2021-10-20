@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as PokemonDataSource from "../../api/PokemonSource";
-import { ResultPokemonName, ResultPokemonDetails } from "../../types/ApiResultTypes";
+import { IPokemonNameResults } from "../../interfaces/IApiResults";
+import { IPokemon } from "../../interfaces/IPokemon";
 
 interface IHomeProps {
 
@@ -11,6 +12,8 @@ interface IHomeState {
   totalData: number,
   limit: number
 };
+
+let allPokemon: IPokemon[] = [];
 
 class Home extends Component<IHomeProps, IHomeState> {
   constructor(props: IHomeProps) {
@@ -37,7 +40,7 @@ class Home extends Component<IHomeProps, IHomeState> {
             let arrPromise: Promise<any>[] = [];
 
             let listPokemon = response.data.results;
-            listPokemon.map((data: ResultPokemonName, index: number) => {
+            listPokemon.map((data: IPokemonNameResults, index: number) => {
               getPokemon = this.fetchPokemon(data.name)
               arrPromise.push(getPokemon);
             });
@@ -52,6 +55,8 @@ class Home extends Component<IHomeProps, IHomeState> {
               .finally(() => {
                 this.setState({
                   isLoading: false
+                }, () => {
+                  console.log("all pokemon", allPokemon);
                 });
               });
           }
@@ -71,7 +76,20 @@ class Home extends Component<IHomeProps, IHomeState> {
     return new Promise((resolve, reject) => {
       PokemonDataSource.fetchPokemon(name)
       .then((response) => {
+        if(response.status == 200) {
+          if(response.data != null) {
+            console.log("response data", response.data);
+            let newPokemon: IPokemon = {
+              id: response.data.id,
+              name: response.data.name,
+              imgURL: response.data.sprites.other.dream_world.front_default
+            };
 
+            allPokemon.push(newPokemon);
+          }
+        } else {
+          // show modal
+        }
       })
       .catch((ex) => {
         // show modal

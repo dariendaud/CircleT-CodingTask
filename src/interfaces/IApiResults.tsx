@@ -1,14 +1,14 @@
-export type ResultPokemonName = {
+export interface IPokemonNameResults {
   name: string,
   url: string
 };
 
-export type ResultPokemonDetails = {
+export interface IPokemonDetailResults {
   id: number,
   name: string,
   sprites: {
     other: {
-      official_artwork: {
+      dream_world: {
         front_default: string
       }
     }

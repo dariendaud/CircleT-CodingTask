@@ -1,8 +1,8 @@
-export type Pokemon = {
+export interface IPokemon {
   id: number,
   name: string,
   imgURL: string,
-  stats: {
+  stats?: {
     hp: number,
     attack: number,
     defense: number,
@@ -10,6 +10,6 @@ export type Pokemon = {
     specialDefense: number,
     speed: number
   },
-  type: number,
-  typeDesc: string
+  type?: number,
+  typeDesc?: string
 };
