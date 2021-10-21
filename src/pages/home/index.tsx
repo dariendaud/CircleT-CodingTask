@@ -8,6 +8,7 @@ import * as PokemonDataSource from "../../api/PokemonSource";
 import { IPokemonListResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
 import Sidebar from "../../components/Sidebar";
+import { ucfirst } from "../../Helper";
 
 interface IHomeProps extends RouteComponentProps {
   listPokemon: IPokemon[],
@@ -71,7 +72,7 @@ class Home extends Component<IHomeProps, IHomeState> {
 
               let newPokemon: IPokemon = {
                 id: data.id,
-                name: data.name,
+                name: ucfirst(data.name),
                 imgURL: imgURL
               };
               listPokemon.push(newPokemon);
