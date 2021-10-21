@@ -1,1 +1,1 @@
-export { saveAllPokemon } from "./pokemon/PokemonActions";
+export { saveAllPokemon, savePokemonID } from "./pokemon/PokemonActions";

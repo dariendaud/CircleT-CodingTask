@@ -14,6 +14,6 @@ export const fetchPokemonGraphQL = async (pQuery: string) => {
   return await axios.post(POKE_GRAPHQL, { query: pQuery });
 }
 
-export const fetchPokemon = async (name: string) => {
-  return await conn.get("pokemon/" + name);
+export const fetchPokemonDetails = async (id: number) => {
+  return await conn.get("pokemon/" + id);
 }

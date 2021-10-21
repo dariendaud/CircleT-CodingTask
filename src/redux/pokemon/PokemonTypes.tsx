@@ -1,1 +1,2 @@
 export const SAVE_ALL_POKEMON = "SAVE_ALL_POKEMON";
+export const SAVE_POKEMON_ID = "SAVE_POKEMON_ID";

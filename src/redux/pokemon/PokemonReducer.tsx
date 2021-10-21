@@ -1,18 +1,34 @@
-import { SAVE_ALL_POKEMON } from "./PokemonTypes";
-import { IPokemonState } from "../../interfaces/IReduxState";
-import { ISaveAllPokemonAction } from "../../interfaces/IReduxAction";
+import { SAVE_ALL_POKEMON, SAVE_POKEMON_ID } from "./PokemonTypes";
+import { IPokemon } from "../../interfaces/IPokemon";
 
-const initialState = {
-  listPokemon: []
+interface IReduxAction {
+  type: string,
+  payload: any
 };
 
-const pokemonReducer = (state: IPokemonState = initialState, action: ISaveAllPokemonAction) => {
+interface IReduxState {
+  listPokemon: IPokemon[],
+  pokemonID: number
+};
+
+const initialState = {
+  listPokemon: [],
+  pokemonID: 0,
+};
+
+const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction) => {
   switch(action.type) {
     case SAVE_ALL_POKEMON:
       return {
         ...state,
         listPokemon: action.payload
       };
+      break;
+    case SAVE_POKEMON_ID:
+      return {
+        ...state,
+        pokemonID: action.payload
+      }
       break;
     default:
       return state;

@@ -1,7 +1,7 @@
 export interface IPokemon {
   id: number,
   name: string,
-  imgURL: string,
+  imgURL?: string,
   stats?: {
     hp: number,
     attack: number,
@@ -10,6 +10,5 @@ export interface IPokemon {
     specialDefense: number,
     speed: number
   },
-  type?: number,
-  typeDesc?: string
+  type?: string[],
 };

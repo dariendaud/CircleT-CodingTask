@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { RouteComponentProps } from "react-router";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { saveAllPokemon } from "../../redux";
-import { MAX_POKEMON } from "../../config";
+import { savePokemonID } from "../../redux";
+import { MAX_POKEMON, BASE_URL_IMG } from "../../config";
 import * as PokemonDataSource from "../../api/PokemonSource";
 import { IPokemonListResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
@@ -12,7 +12,7 @@ import { ucfirst } from "../../Helper";
 
 interface IHomeProps extends RouteComponentProps {
   listPokemon: IPokemon[],
-  saveAllPokemon(payload: IPokemon[]): any
+  savePokemonID(payload: number): any,
 };
 
 interface IHomeState {
@@ -21,8 +21,6 @@ interface IHomeState {
   limit: number,
   listPokemon: IPokemon[],
 };
-
-let allPokemon: IPokemon[] = [];
 
 class Home extends Component<IHomeProps, IHomeState> {
   constructor(props: IHomeProps) {
@@ -37,14 +35,7 @@ class Home extends Component<IHomeProps, IHomeState> {
   }
 
   componentDidMount() {
-    // if(this.props.listPokemon.length == this.state.limit) {
-    //   this.setState({
-    //     listPokemon: this.props.listPokemon,
-    //     isLoading: false
-    //   });
-    // } else {
-      this.fetchPokemon();
-    // }
+    this.fetchPokemon();
   }
 
   fetchPokemon = () => {
@@ -64,11 +55,9 @@ class Home extends Component<IHomeProps, IHomeState> {
           if(response.data != null) {
             let result = response.data.data.pokemon_v2_pokemon;
             let imgURL = "";
-            let padID = "";
 
             result.map((data: IPokemonListResults, index: number) => {
-              padID = String(data.id).padStart(3, "0");
-              imgURL = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/" + padID + ".png";
+              imgURL = BASE_URL_IMG + data.id + ".png";
 
               let newPokemon: IPokemon = {
                 id: data.id,
@@ -94,7 +83,7 @@ class Home extends Component<IHomeProps, IHomeState> {
   }
 
   redirectToDetails = (id: number) => {
-    console.log("param id", id);
+    this.props.savePokemonID(id);
     this.props.history.push("/details");
   }
 
@@ -136,7 +125,7 @@ const mapStateToProps = (state: IHomeState) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    saveAllPokemon: (payload: IPokemon[]) => dispatch(saveAllPokemon(payload))
+    savePokemonID: (payload: number) => dispatch(savePokemonID(payload))
   };
 }
 

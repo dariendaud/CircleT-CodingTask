@@ -6,28 +6,10 @@ export interface IPokemonListResults {
   }[]
 };
 
-export interface IPokemonDetailResults {
-  id: number,
-  name: string,
-  sprites: {
-    other: {
-      dream_world: {
-        front_default: string
-      }
-    }
+export interface IPokemonTypesResults {
+  slot: number,
+  type: {
+    name: string,
+    url: string
   },
-  stats: [{
-    base_stat: number,
-    stat: {
-      name: string,
-      url: string
-    }
-  }],
-  types: [{
-    type: {
-      name: string,
-      url: string
-    }
-  }],
-  weight: number
 };
