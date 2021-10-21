@@ -7,6 +7,7 @@ import { TOTAL_POKEMON } from "../../config";
 import * as PokemonDataSource from "../../api/PokemonSource";
 import { IPokemonNameResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
+import Sidebar from "../../components/Sidebar";
 
 interface IHomeProps extends RouteComponentProps {
   listPokemon: IPokemon[],
@@ -118,11 +119,15 @@ class Home extends Component<IHomeProps, IHomeState> {
   }
 
   render() {
-    return(
-      <div>
-        <h2>Home</h2>
-        {this.state.isLoading ? "loading..." : "done!"}
-      </div>
+    return (
+      <React.Fragment>
+        <Sidebar />
+        <div className="content">
+          <h2>Home</h2>
+          {this.state.isLoading ? "loading..." : "done!"}
+        </div>
+      </React.Fragment>
+
     );
   }
 }

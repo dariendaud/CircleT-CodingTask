@@ -11,3 +11,44 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.background-color-theme {
+  background-color: #EF5350;
+}
+
+.logo-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+}
+
+.sidebar {
+  position: fixed;
+  top: 10;
+  left: 0;
+  height: 100%;
+  width: 78px;
+  /* background: #11101d; */
+  padding: 6px 14px;
+  transition: all 0.5s ease;
+  border-right: 1px solid;
+}
+
+.sidebar.active {
+  width: 240px;
+}
+
+.content {
+  position: absolute;
+  height: 100%;
+  width: calc(100% - 78px);
+  overflow: auto;
+  left: 78px;
+  transition: all 0.5s ease;
+  padding: 20px 30px;
+}
+
+.sidebar.active ~ .content {
+  width: calc(100% - 240px);
+  left: 240px;
+}
