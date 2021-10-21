@@ -3,9 +3,9 @@ import { RouteComponentProps } from "react-router";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { saveAllPokemon } from "../../redux";
-import { TOTAL_POKEMON } from "../../config";
+import { MAX_POKEMON } from "../../config";
 import * as PokemonDataSource from "../../api/PokemonSource";
-import { IPokemonNameResults } from "../../interfaces/IApiResults";
+import { IPokemonListResults } from "../../interfaces/IApiResults";
 import { IPokemon } from "../../interfaces/IPokemon";
 import Sidebar from "../../components/Sidebar";
 
@@ -30,51 +30,52 @@ class Home extends Component<IHomeProps, IHomeState> {
     this.state = {
       isLoading: true,
       totalData: 0,
-      limit: TOTAL_POKEMON,
+      limit: MAX_POKEMON,
       listPokemon: [],
     };
   }
 
   componentDidMount() {
-    if(this.props.listPokemon.length == this.state.limit) {
-      this.setState({
-        listPokemon: this.props.listPokemon,
-        isLoading: false
-      });
-    } else {
-      this.fetchAllPokemon();
-    }
+    // if(this.props.listPokemon.length == this.state.limit) {
+    //   this.setState({
+    //     listPokemon: this.props.listPokemon,
+    //     isLoading: false
+    //   });
+    // } else {
+      this.fetchPokemon();
+    // }
   }
 
-  fetchAllPokemon = () => {
-    let getPokemon = null;
+  fetchPokemon = () => {
+    let listPokemon: IPokemon[] = [];
+    let query = `
+      query pokemon {
+        pokemon_v2_pokemon(limit: ` + this.state.limit + `) {
+          id
+          name
+        }
+      }
+    `;
 
-    PokemonDataSource.fetchAllPokemon(this.state.limit)
-      .then((response) => {
+    PokemonDataSource.fetchPokemonGraphQL(query)
+      .then((response: any) => {
         if(response.status == 200) {
           if(response.data != null) {
-            let arrPromise: Promise<any>[] = [];
+            let result = response.data.data.pokemon_v2_pokemon;
+            let imgURL = "";
+            let padID = "";
 
-            let listPokemon = response.data.results;
-            listPokemon.map((data: IPokemonNameResults, index: number) => {
-              getPokemon = this.fetchPokemon(data.name)
-              arrPromise.push(getPokemon);
+            result.map((data: IPokemonListResults, index: number) => {
+              padID = String(data.id).padStart(3, "0");
+              imgURL = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/" + padID + ".png";
+
+              let newPokemon: IPokemon = {
+                id: data.id,
+                name: data.name,
+                imgURL: imgURL
+              };
+              listPokemon.push(newPokemon);
             });
-
-            Promise.all(arrPromise)
-              .then(() => {
-                
-              })
-              .catch(() => {
-
-              })
-              .finally(() => {
-                this.props.saveAllPokemon(allPokemon);
-
-                this.setState({
-                  isLoading: false
-                });
-              });
           }
         } else {
           // show modal
@@ -84,47 +85,40 @@ class Home extends Component<IHomeProps, IHomeState> {
         // show modal
       })
       .finally(() => {
-
+        this.setState({
+          listPokemon: listPokemon,
+          isLoading: false,
+        }, () => {
+          console.log("state listpokemon", this.state.listPokemon);
+        });
       });
-  }
-
-  fetchPokemon = (name: string) => {
-    return new Promise((resolve, reject) => {
-      PokemonDataSource.fetchPokemon(name)
-      .then((response) => {
-        if(response.status == 200) {
-          if(response.data != null) {
-            let newPokemon: IPokemon = {
-              id: response.data.id,
-              name: response.data.name,
-              imgURL: response.data.sprites.other.dream_world.front_default
-            };
-
-            allPokemon.push(newPokemon);
-          }
-          resolve(1);
-        } else {
-          // show modal
-          reject();
-        }
-      })
-      .catch((ex) => {
-        // show modal
-        reject();
-      })
-      .finally(() => {
-        
-      });
-    });
   }
 
   render() {
+    console.log("isLoading", this.state.isLoading);
+    console.log("listpokemon", this.state.listPokemon);
     return (
       <React.Fragment>
         <Sidebar />
+
         <div className="content">
-          <h2>Home</h2>
-          {this.state.isLoading ? "loading..." : "done!"}
+          <div className="row">
+            {
+              this.state.listPokemon.map((data: IPokemon, index: number) => {
+                return (
+                  <div className="col-md-4 col-12 card-wrapper">
+                    <div className="card-content">
+                      <div className="card-img">
+                        <img src={data.imgURL} width="100%" />
+                      </div>
+                      <div className="card-title">
+                        {data.name}
+                      </div>
+                    </div>
+                  </div>
+                );
+            })}
+          </div>
         </div>
       </React.Fragment>
 

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import logo from './logo.svg';
 import './App.css';
 
 import Store from "./redux/Store";

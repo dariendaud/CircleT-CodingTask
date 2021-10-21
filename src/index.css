@@ -5,6 +5,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  overflow: hidden;
 }
 
 code {
@@ -22,6 +26,7 @@ code {
   color: white;
 }
 
+
 .sidebar {
   position: fixed;
   top: 10;
@@ -38,6 +43,101 @@ code {
   width: 240px;
 }
 
+.sidebar .logo-content .logo {
+  /* color: #fff; */
+  display: flex;
+  height: 50px;
+  width: 100%;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active .logo-content .logo {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.logo-content .logo i{
+  font-size: 28px;
+  margin-right: 5px;
+}
+
+.logo-content .logo .logo-name {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.sidebar #btn-sidebar {
+  position: absolute;
+  /* color: #fff; */
+  left: 50%;
+  top: 6px;
+  font-size: 20px;
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.sidebar.active #btn-sidebar {
+  left: 90%;
+}
+
+.nav-list {
+  padding-left: 0 !important;
+}
+
+.sidebar ul {
+  margin-top: 20px;
+}
+
+.sidebar ul li {
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin: 0 5px;
+  list-style: none;
+  line-height: 50px;
+}
+
+.sidebar ul li a {
+  color: #000;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.sidebar ul li a:hover {
+  background: #fff;
+  color: #11101d;
+}
+
+.sidebar ul li i {
+  height: 50px;
+  min-width: 50px;
+  border-radius: 12px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.sidebar .links-name {
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active .links-name {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .content {
   position: absolute;
   height: 100%;
@@ -45,10 +145,29 @@ code {
   overflow: auto;
   left: 78px;
   transition: all 0.5s ease;
-  padding: 20px 30px;
+  padding: 20px 20px;
 }
 
 .sidebar.active ~ .content {
   width: calc(100% - 240px);
   left: 240px;
+}
+
+.card-wrapper {
+  padding: 10px;
+}
+
+.card-content {
+  border: 1px solid gray;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.card-title {
+  padding: 10px 0;
+  margin-bottom: 0px !important;
+  background-color: #bfbfbf;
+  font-weight: bold;
+  font-size: 20px;
 }

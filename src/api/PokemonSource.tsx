@@ -1,19 +1,19 @@
-import { POKE_API } from "../config";
+import axios from "axios";
+import { POKE_API, POKE_GRAPHQL } from "../config";
 
-const conn = require('axios').default;
-const baseURL = POKE_API;
-
-const axios = conn.create({
-  baseURL: baseURL,
-  withCredential: false,
-  crossDomain: true,
+const conn = axios.create({
+  baseURL: POKE_API,
   headers: {}
 });
 
 export const fetchAllPokemon = async (limit: number) => {
-  return await axios.get("pokemon/?limit=" + limit);
+  return await conn.get("pokemon/?limit=" + limit);
+}
+
+export const fetchPokemonGraphQL = async (pQuery: string) => {
+  return await axios.post(POKE_GRAPHQL, { query: pQuery });
 }
 
 export const fetchPokemon = async (name: string) => {
-  return await axios.get("pokemon/" + name);
+  return await conn.get("pokemon/" + name);
 }
