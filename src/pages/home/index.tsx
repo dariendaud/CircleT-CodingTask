@@ -89,15 +89,16 @@ class Home extends Component<IHomeProps, IHomeState> {
         this.setState({
           listPokemon: listPokemon,
           isLoading: false,
-        }, () => {
-          console.log("state listpokemon", this.state.listPokemon);
         });
       });
   }
 
+  redirectToDetails = (id: number) => {
+    console.log("param id", id);
+    this.props.history.push("/details");
+  }
+
   render() {
-    console.log("isLoading", this.state.isLoading);
-    console.log("listpokemon", this.state.listPokemon);
     return (
       <React.Fragment>
         <Sidebar />
@@ -107,8 +108,8 @@ class Home extends Component<IHomeProps, IHomeState> {
             {
               this.state.listPokemon.map((data: IPokemon, index: number) => {
                 return (
-                  <div className="col-md-4 col-12 card-wrapper">
-                    <div className="card-content">
+                  <div className="col-md-4 col-12 card-wrapper" key={"pokemon-" + data.id}>
+                    <div className="card-content" onClick={() => this.redirectToDetails(data.id)}>
                       <div className="card-img">
                         <img src={data.imgURL} width="100%" />
                       </div>
