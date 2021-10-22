@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { searchPokemon, fetchPokemonList } from "../redux";
+import { POKEMON_TYPE } from "../config";
+import { ucfirst } from "../Helper";
 
 interface ISidebarProps {
-  searchPokemon(keyword: string): any,
+  searchPokemon(keyword: string, types: string[]): any,
   fetchPokemonList(): any,
 };
 
 interface ISidebarState {
-  keyword: string
+  keyword: string,
+  types: string[]
 };
 
 class Sidebar extends Component<ISidebarProps, ISidebarState> {
@@ -16,7 +19,8 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
     super(props);
 
     this.state = {
-      keyword: ""
+      keyword: "",
+      types: []
     };
   }
 
@@ -33,12 +37,30 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
     });
   }
 
+  onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let newArray = [...this.state.types];
+
+    if(e.target.checked) {
+      newArray.push(e.target.value);
+    } else {
+      newArray = newArray.filter((data: string) => {
+        return data != e.target.value;
+      });
+    }
+
+    this.setState({
+      types: newArray
+    }, () => {
+      this.props.searchPokemon(this.state.keyword, this.state.types);
+    });
+  }
+
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(this.state.keyword == "") {
       this.props.fetchPokemonList();
     } else {
-      this.props.searchPokemon(this.state.keyword);
+      this.props.searchPokemon(this.state.keyword, this.state.types);
     }
   }
 
@@ -54,7 +76,13 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
 
         <form className="form-inline my-2 my-lg-0 ml-auto pl-4" onSubmit={this.onSubmit}>
           <div className="input-group mb-3">
-            <input className="form-control" type="search" placeholder="Search" aria-label="Search" onChange={this.onKeywordChange} />
+            <input
+              type="text"
+              name="pSearch"
+              className="form-control"
+              placeholder="Search"
+              aria-label="Search"
+              onChange={this.onKeywordChange} />
             <div className="input-group-append">
               <button type="submit" className="btn btn-outline-secondary">
                 <i className="fas fa-search fa-btn-group"></i>
@@ -63,11 +91,21 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
           </div>
         </form>
 
-        <ul className="nav-list">
-          <li>
-            <span className="links-name">Type</span>
-          </li>
-        </ul>
+        <div className="sidebar-filter">
+          Type
+          <div className="sidebar-checkbox-wrapper">
+            { POKEMON_TYPE.map((data: string, index: number) => {
+              return (
+                <div className="form-check">
+                  <input className="form-check-input" type="checkbox" name={"p" + ucfirst(data)} value={data} onChange={this.onCheckboxChange} />
+                  <label className="form-check-label">
+                    {ucfirst(data)}
+                  </label>
+                </div>
+              );
+            }) }
+          </div>
+        </div>
       </div>
     );
   }
@@ -81,7 +119,7 @@ const mapStateToProps = (state: ISidebarState) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    searchPokemon: (payload: string) => dispatch(searchPokemon(payload)),
+    searchPokemon: (keyword: string, types: string[]) => dispatch(searchPokemon(keyword, types)),
     fetchPokemonList: () => dispatch(fetchPokemonList()),
   };
 }

@@ -33,6 +33,12 @@ export const fetchPokemonFailed = (payload: string) => {
   };
 }
 
+export const fetchPokemonFromStore = () => {
+  return {
+    type: PokemonTypes.FETCH_POKEMON_FROM_STORE
+  };
+}
+
 export const fetchPokemonList = () => {
   return (dispatch: any) => {
     dispatch(fetchAPI());
@@ -87,14 +93,36 @@ export const searchPokemonSuccess = (payload: IPokemon[]) => {
   };
 };
 
-export const searchPokemon = (payload: string) => {
+export const searchPokemon = (keyword: string, types: string[]) => {
   return (dispatch: any) => {
     dispatch(fetchAPI());
 
     let listPokemon: IPokemon[] = [];
+    
+    let whereName = "";
+    if(keyword != "") {
+      whereName = `name: { _ilike: "` + keyword + `" },`;
+    }
+
+    let whereTypes = "";
+    types.map((data: string, index: number) => {
+      whereTypes += `{
+        pokemon_v2_pokemontypes: {
+          pokemon_v2_type: { name: { _eq: "` + data + `" } }
+        }
+      }`;
+    });
+    
     let query = `
         query pokemon {
-          pokemon_v2_pokemon(where: {name: {_ilike: "` + payload + `"}}) {
+          pokemon_v2_pokemon(
+            where: {
+              ` + whereName + `
+              _and: [
+                ` + whereTypes + `
+              ]
+            }
+          ) {
             id
             name
           }

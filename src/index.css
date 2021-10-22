@@ -24,6 +24,10 @@ code {
   font-weight: bold;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .bg-normal {
   background-color: #fff;
   color: #000;
@@ -120,9 +124,10 @@ code {
   height: 100%;
   width: 78px;
   /* background: #11101d; */
-  padding: 6px 14px;
+  padding: 6px 14px 60px 14px;
   transition: all 0.5s ease;
   border-right: 1px solid;
+  overflow: auto;
 }
 
 .sidebar.active {
@@ -178,59 +183,27 @@ code {
   margin-top: 10px !important;
 }
 
-.sidebar ul {
-  margin-top: 20px;
-}
-
-.sidebar ul li {
-  position: relative;
-  height: 50px;
-  width: 100%;
-  margin: 0 5px;
-  list-style: none;
-  line-height: 50px;
-}
-
-.sidebar ul li a {
-  color: #000;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  transition: all 0.4s ease;
-  border-radius: 12px;
-  white-space: nowrap;
-}
-
-.sidebar ul li a:hover {
-  background: #fff;
-  color: #11101d;
-}
-
-.sidebar ul li i {
-  height: 50px;
-  min-width: 50px;
-  border-radius: 12px;
-  line-height: 50px;
-  text-align: center;
-}
-
-.sidebar .links-name {
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.5s ease;
-}
-
-.sidebar.active .links-name {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .sidebar.active form {
   opacity: 1;
 }
 
 .sidebar form {
   opacity: 0;
+}
+
+.sidebar-filter {
+  padding: 10px 5px;
+  margin-top: 20px;
+  opacity: 0;
+}
+
+.sidebar.active .sidebar-filter {
+  opacity: 1;
+}
+
+.sidebar-checkbox-wrapper {
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .content {
