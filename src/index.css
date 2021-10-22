@@ -225,6 +225,14 @@ code {
   pointer-events: auto;
 }
 
+.sidebar.active form {
+  opacity: 1;
+}
+
+.sidebar form {
+  opacity: 0;
+}
+
 .content {
   position: absolute;
   height: 100%;
@@ -301,6 +309,15 @@ code {
   font-size: 20px;
   font-weight: bold;
   color: #737373;
+}
+
+.fa-btn-group {
+  font-size: 17px;
+  font-weight: lighter;
+}
+
+.input-group-prepend {
+  cursor: pointer;
 }
 
 @media (min-width: 325px) and (max-width: 575px) {
