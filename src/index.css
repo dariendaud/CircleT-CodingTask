@@ -254,7 +254,7 @@ code {
 .card-title {
   padding: 10px 0;
   margin-bottom: 0px !important;
-  background-color: #bfbfbf;
+  background-color: #cccccc;
   font-weight: bold;
   font-size: 20px;
 }
@@ -287,7 +287,7 @@ code {
   border-bottom: 1px solid;
   border-top-right-radius: 7px;
   border-bottom-right-radius: 7px;
-  background-color: #bfbfbf;
+  background-color: #cccccc;
   padding: 0 20px 20px 20px;
 }
 
@@ -295,6 +295,12 @@ code {
   margin: 10px 0;
   font-size: 24px;
   font-weight: bold;
+}
+
+.details-card-subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #737373;
 }
 
 @media (min-width: 325px) and (max-width: 575px) {

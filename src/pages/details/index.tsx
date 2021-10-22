@@ -57,6 +57,7 @@ class Details extends Component<IDetailsProps, IDetailsState> {
             let types = response.data.types;
             console.log("types", types);
 
+            pokemonDetails.padID = String(this.state.id).padStart(3, "0");
             pokemonDetails.name = ucfirst(result.name);
             pokemonDetails.stats = {
               hp: stats[0].base_stat,
@@ -66,6 +67,8 @@ class Details extends Component<IDetailsProps, IDetailsState> {
               specialDefense: stats[4].base_stat,
               speed: stats[5].base_stat,
             };
+            pokemonDetails.height = result.height;
+            pokemonDetails.weight = result.weight;
             
             pokemonDetails.type = [];
             types.map((data: IPokemonTypesResults, index: number) => {
@@ -89,15 +92,34 @@ class Details extends Component<IDetailsProps, IDetailsState> {
       });
   }
 
+  goBack = () => {
+    this.props.history.goBack();
+  }
+
   render() {
     return(
       <div className="details-content">
         <div className="row">
-          <div className="offset-md-2 col-md-4 text-center details-card-left">
+          <div className="col-md-2">
+            <button className="btn btn-secondary" onClick={() => this.goBack()}>
+              <i className="fas fa-angle-left me-2"></i>
+              Back
+            </button>
+          </div>
+          <div className="col-md-4 text-center details-card-left">
             <img src={this.state.pokemonData.imgURL} className="details-img" />
           </div>
           <div className="col-md-4 details-card-right">
-            <div className="details-card-title">{this.state.pokemonData.name}</div>
+            <div className="details-card-title">
+              {this.state.pokemonData.name}
+              <span className="details-card-subtitle ms-2">{"#" + this.state.pokemonData.padID}</span>
+            </div>
+            <div className="row mt-4">
+              <div className="col-4 font-weight-bold">Weight</div>
+              <div className="col-1 font-weight-bold">{this.state.pokemonData.weight}</div>
+              <div className="offset-1 col-4 font-weight-bold">Height</div>
+              <div className="col-1 font-weight-bold">{this.state.pokemonData.height}</div>
+            </div>
             <div className="row">
               <div className="col-4 font-weight-bold">Attack</div>
               <div className="col-1 font-weight-bold">{this.state.pokemonData.stats?.attack}</div>
@@ -116,7 +138,7 @@ class Details extends Component<IDetailsProps, IDetailsState> {
               <div className="offset-1 col-4 font-weight-bold">Special Defense</div>
               <div className="col-1 font-weight-bold">{this.state.pokemonData.stats?.specialDefense}</div>
             </div>
-            <div className="card-title mt-2">Type</div>
+            <div className="card-title mt-3">Type</div>
             <div>
               {
                 this.state.pokemonData.type?.map((data: any, index: number) => {
@@ -126,26 +148,7 @@ class Details extends Component<IDetailsProps, IDetailsState> {
                 })
               }
             </div>
-            <div className="card-title mt-2">Weakness</div>
-            <div>
-              <span className="badge bg-normal mx-1">Normal</span>
-              <span className="badge bg-fighting mx-1">Fighting</span>
-              <span className="badge bg-flying mx-1">Flying</span>
-              <span className="badge bg-poison mx-1">Poison</span>
-              <span className="badge bg-ground mx-1">Ground</span>
-              <span className="badge bg-rock mx-1">Rock</span>
-              <span className="badge bg-bug mx-1">Bug</span>
-              <span className="badge bg-ghost mx-1">Ghost</span>
-              <span className="badge bg-steel mx-1">Steel</span>
-              <span className="badge bg-fire mx-1">Fire</span>
-              <span className="badge bg-water mx-1">Water</span>
-              <span className="badge bg-grass mx-1">Grass</span>
-              <span className="badge bg-physic mx-1">Physic</span>
-              <span className="badge bg-ice mx-1">Ice</span>
-              <span className="badge bg-dragon mx-1">Dragon</span>
-              <span className="badge bg-dark mx-1">Dark</span>
-              <span className="badge bg-fairy mx-1">Fairy</span>
-            </div>
+            
           </div>
         </div>
       </div>
