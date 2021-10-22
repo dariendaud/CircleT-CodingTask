@@ -41,6 +41,7 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
         return {
           ...state,
           isLoading: false,
+          listPokemon: [],
           errorMessage: action.payload
         };
         break;
@@ -50,12 +51,21 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
         pokemonID: action.payload
       }
       break;
-    case PokemonTypes.SEARCH_POKEMON_BY_NAME:
+    case PokemonTypes.SEARCH_POKEMON_SUCCESS:
       return {
         ...state,
+        isLoading: false,
         listPokemon: action.payload
       };
       break;
+      case PokemonTypes.SEARCH_POKEMON_FAILED:
+        return {
+          ...state,
+          isLoading: false,
+          listPokemon: [],
+          errorMessage: action.payload
+        };
+        break;
     default:
       return state;
       break;

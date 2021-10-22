@@ -1,5 +1,5 @@
 export {
   fetchPokemonList,
   savePokemonID,
-  searchPokemonByName
+  searchPokemon
 } from "./pokemon/PokemonActions";

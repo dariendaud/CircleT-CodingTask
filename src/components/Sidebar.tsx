@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { searchPokemonByName } from "../redux";
+import { searchPokemon, fetchPokemonList } from "../redux";
 
 interface ISidebarProps {
-  searchPokemonByName(keyword: string): any,
+  searchPokemon(keyword: string): any,
+  fetchPokemonList(): any,
 };
 
 interface ISidebarState {
@@ -24,8 +25,21 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
     sidebar.classList.toggle("active");
   }
 
-  onSubmit = () => {
-    
+  onKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      keyword: e.target.value
+    }, () => {
+      console.log("search keyword", this.state.keyword);
+    });
+  }
+
+  onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(this.state.keyword == "") {
+      this.props.fetchPokemonList();
+    } else {
+      this.props.searchPokemon(this.state.keyword);
+    }
   }
 
   render() {
@@ -38,10 +52,10 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
           <i className="fas fa-bars" id="btn-sidebar" onClick={() => this.onClickBtnSidebar()}></i>
         </div>
 
-        <form className="form-inline my-2 my-lg-0 ml-auto pl-4" onSubmit={() => this.onSubmit()}>
+        <form className="form-inline my-2 my-lg-0 ml-auto pl-4" onSubmit={this.onSubmit}>
           <div className="input-group mb-3">
-            <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
-            <div className="input-group-prepend">
+            <input className="form-control" type="search" placeholder="Search" aria-label="Search" onChange={this.onKeywordChange} />
+            <div className="input-group-append">
               <button type="submit" className="btn btn-outline-secondary">
                 <i className="fas fa-search fa-btn-group"></i>
               </button>
@@ -67,7 +81,8 @@ const mapStateToProps = (state: ISidebarState) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    searchPokemonByName: (payload: string) => dispatch(searchPokemonByName(payload))
+    searchPokemon: (payload: string) => dispatch(searchPokemon(payload)),
+    fetchPokemonList: () => dispatch(fetchPokemonList()),
   };
 }
 

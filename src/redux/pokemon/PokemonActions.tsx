@@ -19,14 +19,6 @@ export const savePokemonID = (payload: number) => {
   };
 };
 
-export const searchPokemonByName = (payload: string) => {
-  let result = searchPokemon();
-  return {
-    type: PokemonTypes.SEARCH_POKEMON_BY_NAME,
-    payload: payload
-  };
-};
-
 export const fetchPokemonSuccess = (payload: IPokemon[]) => {
   return {
     type: PokemonTypes.FETCH_POKEMON_SUCCESS,
@@ -88,7 +80,56 @@ export const fetchPokemonList = () => {
   };
 }
 
-function searchPokemon() {
-  // call API
-  return "test";
+export const searchPokemonSuccess = (payload: IPokemon[]) => {
+  return {
+    type: PokemonTypes.SEARCH_POKEMON_SUCCESS,
+    payload: payload
+  };
+};
+
+export const searchPokemon = (payload: string) => {
+  return (dispatch: any) => {
+    dispatch(fetchAPI());
+
+    let listPokemon: IPokemon[] = [];
+    let query = `
+        query pokemon {
+          pokemon_v2_pokemon(where: {name: {_ilike: "` + payload + `"}}) {
+            id
+            name
+          }
+        }
+      `;
+
+    PokemonDataSource.fetchPokemonGraphQL(query)
+      .then((response: any) => {
+        if (response.status == 200) {
+          if (response.data != null) {
+            let result = response.data.data.pokemon_v2_pokemon;
+            let imgURL = "";
+
+            result.map((data: IPokemonListResults, index: number) => {
+              imgURL = BASE_URL_IMG + data.id + ".png";
+
+              let newPokemon: IPokemon = {
+                id: data.id,
+                name: ucfirst(data.name),
+                imgURL: imgURL
+              };
+              listPokemon.push(newPokemon);
+            });
+
+            dispatch(searchPokemonSuccess(listPokemon));
+          }
+        } else {
+          // show modal
+        }
+      })
+      .catch((ex) => {
+        // show modal
+      })
+      .finally(() => {
+        
+      });
+  };
 }
