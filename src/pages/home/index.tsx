@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { fetchPokemonList, savePokemonID } from "../../redux";
 import { IPokemon } from "../../interfaces/IPokemon";
 import Sidebar from "../../components/Sidebar";
+import HomeSkeleton from "./HomeSkeleton";
 
 interface IHomeProps extends RouteComponentProps {
   isLoading: boolean,
@@ -43,24 +44,28 @@ class Home extends Component<IHomeProps, IHomeState> {
         <Sidebar />
 
         <div className="content">
-          {this.props.isLoading ? "loading props..." : "props done!"}
-          <div className="row">
-            {
-              this.props.listPokemon.map((data: IPokemon, index: number) => {
-                return (
-                  <div className="col-md-4 col-12 card-wrapper" key={"pokemon-" + data.id}>
-                    <div className="card-content" onClick={() => this.redirectToDetails(data.id)}>
-                      <div className="card-img">
-                        <img src={data.imgURL} width="100%" />
+          {
+            this.props.isLoading ?
+              <HomeSkeleton />
+              :
+              <div className="row">
+                {
+                  this.props.listPokemon.map((data: IPokemon, index: number) => {
+                    return (
+                      <div className="col-md-4 col-12 card-wrapper" key={"pokemon-" + data.id}>
+                        <div className="card-content" onClick={() => this.redirectToDetails(data.id)}>
+                          <div className="card-img">
+                            <img src={data.imgURL} width="100%" />
+                          </div>
+                          <div className="card-title">
+                            {data.name}
+                          </div>
+                        </div>
                       </div>
-                      <div className="card-title">
-                        {data.name}
-                      </div>
-                    </div>
-                  </div>
-                );
-            })}
-          </div>
+                    );
+                  })}
+              </div>
+          }
         </div>
       </React.Fragment>
 
