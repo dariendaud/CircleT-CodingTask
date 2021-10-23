@@ -4,12 +4,15 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchPokemonList, savePokemonID } from "../../redux";
 import { IPokemon } from "../../interfaces/IPokemon";
+
 import Sidebar from "../../components/Sidebar";
+import CustomModal from "../../components/Modal";
 import HomeSkeleton from "./HomeSkeleton";
 
 interface IHomeProps extends RouteComponentProps {
   isLoading: boolean,
   listPokemon: IPokemon[],
+  showModal: boolean,
   fetchPokemonList(): any,
   savePokemonID(payload: number): any,
 };
@@ -17,6 +20,7 @@ interface IHomeProps extends RouteComponentProps {
 interface IHomeState {
   isLoading: boolean,
   listPokemon: IPokemon[],
+  showModal: boolean,
 };
 
 class Home extends Component<IHomeProps, IHomeState> {
@@ -26,6 +30,7 @@ class Home extends Component<IHomeProps, IHomeState> {
     this.state = {
       isLoading: true,
       listPokemon: [],
+      showModal: false,
     };
   }
 
@@ -44,6 +49,8 @@ class Home extends Component<IHomeProps, IHomeState> {
         <Sidebar />
 
         <div className="content">
+          <CustomModal showModal={this.props.showModal} />
+
           {
             this.props.isLoading ?
               <HomeSkeleton />
@@ -76,7 +83,8 @@ class Home extends Component<IHomeProps, IHomeState> {
 const mapStateToProps = (state: IHomeState) => {
   return {
     isLoading: state.isLoading,
-    listPokemon: state.listPokemon
+    listPokemon: state.listPokemon,
+    showModal: state.showModal,
   };
 }
 

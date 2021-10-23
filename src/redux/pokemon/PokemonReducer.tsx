@@ -12,7 +12,8 @@ interface IReduxState {
   listPokemon: IPokemon[],
   pokemonID: number,
   searchKeyword: string,
-  errorMessage: string
+  errorMessage: string,
+  showModal: boolean
 };
 
 const initialState = {
@@ -21,11 +22,18 @@ const initialState = {
   listPokemon: [],
   pokemonID: 0,
   searchKeyword: "",
-  errorMessage: ""
+  errorMessage: "",
+  showModal: false
 };
 
 const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction) => {
   switch(action.type) {
+    case PokemonTypes.CLOSE_MODAL:
+      return {
+        ...state,
+        showModal: false
+      };
+      break;
     case PokemonTypes.FETCH_API:
       return{
         ...state,
@@ -52,7 +60,8 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
         ...state,
         isLoading: false,
         listPokemon: [],
-        errorMessage: action.payload
+        errorMessage: action.payload,
+        showModal: true
       };
       break;
     case PokemonTypes.SAVE_POKEMON_ID:
@@ -73,7 +82,8 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
           ...state,
           isLoading: false,
           listPokemon: [],
-          errorMessage: action.payload
+          errorMessage: action.payload,
+          showModal: true
         };
         break;
     default:

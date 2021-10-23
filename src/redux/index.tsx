@@ -1,4 +1,5 @@
 export {
+  closeModal,
   fetchPokemonList,
   fetchPokemonFromStore,
   savePokemonID,

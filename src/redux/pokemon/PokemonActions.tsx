@@ -6,6 +6,12 @@ import { ucfirst } from "../../Helper";
 import { IPokemon } from "../../interfaces/IPokemon";
 import { IPokemonListResults } from "../../interfaces/IApiResults";
 
+export const closeModal = () => {
+  return {
+    type: PokemonTypes.CLOSE_MODAL,
+  };
+};
+
 export const fetchAPI = () => {
   return {
     type: PokemonTypes.FETCH_API
@@ -75,10 +81,12 @@ export const fetchPokemonList = () => {
           }
         } else {
           // show modal
+          dispatch(fetchPokemonFailed("Failed to fetch pokemon list"));
         }
       })
       .catch((ex) => {
         // show modal
+        dispatch(fetchPokemonFailed("Failed to fetch pokemon list"));
       })
       .finally(() => {
         
@@ -89,6 +97,13 @@ export const fetchPokemonList = () => {
 export const searchPokemonSuccess = (payload: IPokemon[]) => {
   return {
     type: PokemonTypes.SEARCH_POKEMON_SUCCESS,
+    payload: payload
+  };
+};
+
+export const searchPokemonFailed = (payload: string) => {
+  return {
+    type: PokemonTypes.SEARCH_POKEMON_FAILED,
     payload: payload
   };
 };
@@ -151,10 +166,12 @@ export const searchPokemon = (keyword: string, types: string[]) => {
           }
         } else {
           // show modal
+          dispatch(searchPokemonFailed("Failed to search pokemon"));
         }
       })
       .catch((ex) => {
         // show modal
+        dispatch(searchPokemonFailed("Failed to search pokemon"));
       })
       .finally(() => {
         

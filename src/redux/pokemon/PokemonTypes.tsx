@@ -1,3 +1,4 @@
+export const CLOSE_MODAL = "CLOSE_MODAL";
 export const FETCH_API = "FETCH_API";
 
 export const FETCH_POKEMON_SUCCESS = "FETCH_POKEMON_SUCCESS";
