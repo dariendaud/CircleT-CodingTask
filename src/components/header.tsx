@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchPokemonList } from "../redux";
+import { searchPokemon } from "../redux";
+import { ISearchParam } from "../interfaces/IParameter";
 
 interface IHeaderProps {
-  fetchPokemonList(): any
+  searchPokemon(param: ISearchParam): any
 };
 
 interface IHeaderState {
@@ -20,7 +21,13 @@ class Header extends Component<IHeaderProps, IHeaderState> {
   }
 
   onClickLogo = () => {
-    this.props.fetchPokemonList();
+    let param: ISearchParam = {
+      keyword: "",
+      types: [],
+      page: 1.
+    };
+    
+    this.props.searchPokemon(param);
   }
 
   render() {
@@ -43,7 +50,7 @@ const mapStateToProps = (state: IHeaderState) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    fetchPokemonList: () => dispatch(fetchPokemonList()),
+    searchPokemon: (param: ISearchParam) => dispatch(searchPokemon(param)),
   };
 }
 

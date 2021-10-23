@@ -1,17 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { searchPokemon, fetchPokemonList } from "../redux";
+import { searchPokemon, onChangeFilter, onChangeKeyword } from "../redux";
 import { POKEMON_TYPE } from "../config";
 import { ucfirst } from "../Helper";
+import { ISearchParam } from "../interfaces/IParameter";
 
 interface ISidebarProps {
-  searchPokemon(keyword: string, types: string[]): any,
-  fetchPokemonList(): any,
+  currentPage: number,
+  search: ISearchParam,
+  searchPokemon(param: ISearchParam): any,
+  onChangeFilter(types: string[]): any,
+  onChangeKeyword(keyword: string): any,
 };
 
 interface ISidebarState {
   keyword: string,
-  types: string[]
+  types: string[],
+  currentPage: number,
+  search: ISearchParam,
 };
 
 class Sidebar extends Component<ISidebarProps, ISidebarState> {
@@ -20,7 +26,13 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
 
     this.state = {
       keyword: "",
-      types: []
+      types: [],
+      currentPage: 1,
+      search: {
+        keyword: "",
+        types: [],
+        page: 1,
+      }
     };
   }
 
@@ -30,15 +42,11 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
   }
 
   onKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      keyword: e.target.value
-    }, () => {
-      console.log("search keyword", this.state.keyword);
-    });
+    this.props.onChangeKeyword(e.target.value);
   }
 
   onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newArray = [...this.state.types];
+    let newArray = [...this.props.search.types];
 
     if(e.target.checked) {
       newArray.push(e.target.value);
@@ -48,19 +56,32 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
       });
     }
 
-    this.setState({
-      types: newArray
-    }, () => {
-      this.props.searchPokemon(this.state.keyword, this.state.types);
-    });
+    this.props.onChangeFilter(newArray);
+
+    let param: ISearchParam = {
+      keyword: this.props.search.keyword,
+      types: newArray,
+      page: 1,
+    };
+
+    this.props.searchPokemon(param);
   }
 
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(this.state.keyword == "") {
-      this.props.fetchPokemonList();
+    let param: ISearchParam = {
+      keyword: "",
+      types: [],
+      page: 1,
+    };
+
+    if(this.props.search.keyword == "") {
+      this.props.searchPokemon(param);
     } else {
-      this.props.searchPokemon(this.state.keyword, this.state.types);
+      param.keyword = this.props.search.keyword;
+      param.types = this.state.types;
+
+      this.props.searchPokemon(param);
     }
   }
 
@@ -82,6 +103,7 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
               className="form-control"
               placeholder="Search"
               aria-label="Search"
+              value={this.props.search.keyword}
               onChange={this.onKeywordChange} />
             <div className="input-group-append">
               <button type="submit" className="btn btn-outline-secondary">
@@ -97,7 +119,14 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
             { POKEMON_TYPE.map((data: string, index: number) => {
               return (
                 <div className="form-check">
-                  <input className="form-check-input" type="checkbox" name={"p" + ucfirst(data)} value={data} onChange={this.onCheckboxChange} />
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name={"p" + ucfirst(data)}
+                    value={data}
+                    onChange={this.onCheckboxChange}
+                    checked={this.props.search.types.includes(data)}
+                  />
                   <label className="form-check-label">
                     {ucfirst(data)}
                   </label>
@@ -113,14 +142,16 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
 
 const mapStateToProps = (state: ISidebarState) => {
   return {
-    
+    currentPage: state.currentPage,
+    search: state.search,
   };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    searchPokemon: (keyword: string, types: string[]) => dispatch(searchPokemon(keyword, types)),
-    fetchPokemonList: () => dispatch(fetchPokemonList()),
+    searchPokemon: (param: ISearchParam) => dispatch(searchPokemon(param)),
+    onChangeFilter: (types: string[]) => dispatch(onChangeFilter(types)),
+    onChangeKeyword: (keyword: string) => dispatch(onChangeKeyword(keyword)),
   };
 }
 

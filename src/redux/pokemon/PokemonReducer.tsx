@@ -1,5 +1,6 @@
 import * as PokemonTypes from "./PokemonTypes";
 import { IPokemon } from "../../interfaces/IPokemon";
+import { ISearchParam } from "../../interfaces/IParameter";
 
 interface IReduxAction {
   type: string,
@@ -13,7 +14,8 @@ interface IReduxState {
   pokemonID: number,
   searchKeyword: string,
   errorMessage: string,
-  showModal: boolean
+  showModal: boolean,
+  search: ISearchParam,
 };
 
 const initialState = {
@@ -23,11 +25,17 @@ const initialState = {
   pokemonID: 0,
   searchKeyword: "",
   errorMessage: "",
-  showModal: false
+  showModal: false,
+  search: {
+    keyword: "",
+    types: [],
+    page: 1,
+  }
 };
 
 const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction) => {
-  switch(action.type) {
+  let lsPokemon: IPokemon[] = [];
+  switch (action.type) {
     case PokemonTypes.CLOSE_MODAL:
       return {
         ...state,
@@ -35,7 +43,7 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
       };
       break;
     case PokemonTypes.FETCH_API:
-      return{
+      return {
         ...state,
         isLoading: true
       };
@@ -47,21 +55,22 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
         listPokemon: state.allPokemon
       };
       break;
-    case PokemonTypes.FETCH_POKEMON_SUCCESS:
+    case PokemonTypes.ON_CHANGE_FILTER:
       return {
         ...state,
-        isLoading: false,
-        allPokemon: action.payload,
-        listPokemon: action.payload
+        search: {
+          ...state.search,
+          types: action.payload,
+        }
       };
       break;
-    case PokemonTypes.FETCH_POKEMON_FAILED:
+    case PokemonTypes.ON_CHANGE_KEYWORD:
       return {
         ...state,
-        isLoading: false,
-        listPokemon: [],
-        errorMessage: action.payload,
-        showModal: true
+        search: {
+          ...state.search,
+          keyword: action.payload,
+        }
       };
       break;
     case PokemonTypes.SAVE_POKEMON_ID:
@@ -71,21 +80,34 @@ const pokemonReducer = (state: IReduxState = initialState, action: IReduxAction)
       }
       break;
     case PokemonTypes.SEARCH_POKEMON_SUCCESS:
+      let param = action.payload.param;
+      console.log("page", param.page);
+
+      lsPokemon = [];
+      lsPokemon = [...state.listPokemon];
+
+      if (param.page > 1) {
+        lsPokemon = lsPokemon.concat(action.payload.listPokemon);
+      } else {
+        lsPokemon = [...action.payload.listPokemon];
+      }
+
       return {
         ...state,
         isLoading: false,
-        listPokemon: action.payload
+        listPokemon: lsPokemon,
+        search: param,
       };
       break;
-      case PokemonTypes.SEARCH_POKEMON_FAILED:
-        return {
-          ...state,
-          isLoading: false,
-          listPokemon: [],
-          errorMessage: action.payload,
-          showModal: true
-        };
-        break;
+    case PokemonTypes.SEARCH_POKEMON_FAILED:
+      return {
+        ...state,
+        isLoading: false,
+        listPokemon: [],
+        errorMessage: action.payload,
+        showModal: true
+      };
+      break;
     default:
       return state;
       break;

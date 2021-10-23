@@ -5,6 +5,7 @@ import { ucfirst } from "../../Helper";
 
 import { IPokemon } from "../../interfaces/IPokemon";
 import { IPokemonListResults } from "../../interfaces/IApiResults";
+import { ISearchParam } from "../../interfaces/IParameter";
 
 export const closeModal = () => {
   return {
@@ -18,6 +19,26 @@ export const fetchAPI = () => {
   };
 }
 
+export const fetchPokemonFromStore = () => {
+  return {
+    type: PokemonTypes.FETCH_POKEMON_FROM_STORE
+  };
+}
+
+export const onChangeFilter = (types: string[]) => {
+  return {
+    type: PokemonTypes.ON_CHANGE_FILTER,
+    payload: types,
+  };
+}
+
+export const onChangeKeyword = (keyword: string) => {
+  return {
+    type: PokemonTypes.ON_CHANGE_KEYWORD,
+    payload: keyword,
+  };
+}
+
 export const savePokemonID = (payload: number) => {
   return {
     type: PokemonTypes.SAVE_POKEMON_ID,
@@ -25,79 +46,13 @@ export const savePokemonID = (payload: number) => {
   };
 };
 
-export const fetchPokemonSuccess = (payload: IPokemon[]) => {
-  return {
-    type: PokemonTypes.FETCH_POKEMON_SUCCESS,
-    payload: payload
-  };
-}
-
-export const fetchPokemonFailed = (payload: string) => {
-  return {
-    type: PokemonTypes.FETCH_POKEMON_FAILED,
-    payload: payload
-  };
-}
-
-export const fetchPokemonFromStore = () => {
-  return {
-    type: PokemonTypes.FETCH_POKEMON_FROM_STORE
-  };
-}
-
-export const fetchPokemonList = () => {
-  return (dispatch: any) => {
-    dispatch(fetchAPI());
-
-    let listPokemon: IPokemon[] = [];
-    let query = `
-        query pokemon {
-          pokemon_v2_pokemon(limit: ` + MAX_POKEMON + `) {
-            id
-            name
-          }
-        }
-      `;
-
-    PokemonDataSource.fetchPokemonGraphQL(query)
-      .then((response: any) => {
-        if (response.status == 200) {
-          if (response.data != null) {
-            let result = response.data.data.pokemon_v2_pokemon;
-            let imgURL = "";
-
-            result.map((data: IPokemonListResults, index: number) => {
-              imgURL = BASE_URL_IMG + data.id + ".png";
-
-              let newPokemon: IPokemon = {
-                id: data.id,
-                name: ucfirst(data.name),
-                imgURL: imgURL
-              };
-              listPokemon.push(newPokemon);
-            });
-
-            dispatch(fetchPokemonSuccess(listPokemon));
-          }
-        } else {
-          // show modal
-          dispatch(fetchPokemonFailed("Failed to fetch pokemon list"));
-        }
-      })
-      .catch((ex) => {
-        // show modal
-        dispatch(fetchPokemonFailed("Failed to fetch pokemon list"));
-      })
-      .finally(() => {
-        
-      });
-  };
-}
-
-export const searchPokemonSuccess = (payload: IPokemon[]) => {
+export const searchPokemonSuccess = (listPokemon: IPokemon[], param: ISearchParam) => {
   return {
     type: PokemonTypes.SEARCH_POKEMON_SUCCESS,
-    payload: payload
+    payload: {
+      listPokemon: listPokemon,
+      param: param,
+    }
   };
 };
 
@@ -108,19 +63,21 @@ export const searchPokemonFailed = (payload: string) => {
   };
 };
 
-export const searchPokemon = (keyword: string, types: string[]) => {
+export const searchPokemon = (param: ISearchParam) => {
   return (dispatch: any) => {
     dispatch(fetchAPI());
 
     let listPokemon: IPokemon[] = [];
+
+    let offset: number = (param.page - 1) * MAX_POKEMON;
     
     let whereName = "";
-    if(keyword != "") {
-      whereName = `name: { _ilike: "` + keyword + `" },`;
+    if(param.keyword != "") {
+      whereName = `name: { _ilike: "` + param.keyword + `" },`;
     }
 
     let whereTypes = "";
-    types.map((data: string, index: number) => {
+    param.types.map((data: string, index: number) => {
       whereTypes += `{
         pokemon_v2_pokemontypes: {
           pokemon_v2_type: { name: { _eq: "` + data + `" } }
@@ -131,6 +88,8 @@ export const searchPokemon = (keyword: string, types: string[]) => {
     let query = `
         query pokemon {
           pokemon_v2_pokemon(
+            limit: ` + MAX_POKEMON + `
+            offset: ` + offset + `
             where: {
               ` + whereName + `
               _and: [
@@ -162,7 +121,7 @@ export const searchPokemon = (keyword: string, types: string[]) => {
               listPokemon.push(newPokemon);
             });
 
-            dispatch(searchPokemonSuccess(listPokemon));
+            dispatch(searchPokemonSuccess(listPokemon, param));
           }
         } else {
           // show modal
