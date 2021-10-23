@@ -76,10 +76,11 @@ class Sidebar extends Component<ISidebarProps, ISidebarState> {
     };
 
     if(this.props.search.keyword == "") {
+      param.types = this.props.search.types;
       this.props.searchPokemon(param);
     } else {
       param.keyword = this.props.search.keyword;
-      param.types = this.state.types;
+      param.types = this.props.search.types;
 
       this.props.searchPokemon(param);
     }

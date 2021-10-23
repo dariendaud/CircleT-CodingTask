@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import { RouteComponentProps } from "react-router";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { searchPokemon } from "../redux";
 import { ISearchParam } from "../interfaces/IParameter";
 
-interface IHeaderProps {
+interface IHeaderProps extends RouteComponentProps {
   searchPokemon(param: ISearchParam): any
 };
 
@@ -26,8 +28,9 @@ class Header extends Component<IHeaderProps, IHeaderState> {
       types: [],
       page: 1.
     };
-    
+
     this.props.searchPokemon(param);
+    this.props.history.push('/');
   }
 
   render() {
@@ -54,4 +57,4 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Header);
+export default connect(mapStateToProps, mapDispatchToProps) (withRouter(Header));

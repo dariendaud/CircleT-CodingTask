@@ -33,9 +33,8 @@ class Details extends Component<IDetailsProps, IDetailsState> {
   }
 
   componentDidMount() {
-    console.log("pokemonID", this.state.id);
     if(this.state.id == 0) {
-      // show modal
+      this.props.history.push("/");
     } else {
       this.fetchPokemonDetails();
     }
@@ -55,7 +54,6 @@ class Details extends Component<IDetailsProps, IDetailsState> {
             let result = response.data;
             let stats = response.data.stats;
             let types = response.data.types;
-            console.log("types", types);
 
             pokemonDetails.padID = String(this.state.id).padStart(3, "0");
             pokemonDetails.name = ucfirst(result.name);
@@ -74,8 +72,6 @@ class Details extends Component<IDetailsProps, IDetailsState> {
             types.map((data: IPokemonTypesResults, index: number) => {
               pokemonDetails.type?.push(data.type.name.toLowerCase());
             });
-
-            console.log("pokemonDetails", pokemonDetails);
           }
         } else {
           // show modal
