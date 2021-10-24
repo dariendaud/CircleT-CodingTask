@@ -73,7 +73,7 @@ export const searchPokemon = (param: ISearchParam) => {
     
     let whereName = "";
     if(param.keyword != "") {
-      whereName = `name: { _ilike: "` + param.keyword + `" },`;
+      whereName = `name: { _ilike: "%` + param.keyword + `%" },`;
     }
 
     let whereTypes = "";
